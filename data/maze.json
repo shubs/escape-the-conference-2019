@@ -1,0 +1,25 @@
+{
+  "@context": [
+    "http://micro-api.org/context.jsonld",
+    {
+      "@base": "http://localhost:3000",
+      "@vocab": "http://localhost:3000/#"
+    }
+  ],
+  "href": "http://localhost:3000/maze/SFD20WrultcMedTM",
+  "meta": {
+    "@context": null,
+    "count": 1
+  },
+  "type": "Maze",
+  "id": "SFD20WrultcMedTM",
+  "name": "Escape the Conference",
+  "logo": "http://escape.apidays.co/img/logo.png",
+  "start": {
+    "href": "http://escape.apidays.co/maze/SFD20WrultcMedTM/start",
+    "id": "7gurme4enXpGijVl"
+  },
+  "story": "The dark and evil Middleware has stolen all the API knowledge and locked it up in a safe. Find the clues and solve all its riddles to save us all!",
+  "instructions": "Loose yourself in the maze, wonder in the cells to find the riddles. Solve the riddles and find each part of the lost token",
+  "validate": "http://escape.apidays.co/validate/:token"
+}

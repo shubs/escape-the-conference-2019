@@ -1,0 +1,41 @@
+{
+  "@context": [
+    "http://micro-api.org/context.jsonld",
+    {
+      "@base": "http://escape.apidays.co",
+      "@vocab": "http://escape.apidays.co/#"
+    }
+  ],
+  "href": "http://escape.apidays.co/maze",
+  "meta": {
+    "@context": null,
+    "count": 5
+  },
+  "query": {
+    "@context": null,
+    "include": [],
+    "offset": 0,
+    "limit": 1000,
+    "match": {},
+    "range": {},
+    "exists": {},
+    "fields": {},
+    "sort": {}
+  },
+  "graph": [
+    {
+      "type": "Maze",
+      "href": "http://escape.apidays.co/maze/q9wchRsARznXlEuB",
+      "id": "q9wchRsARznXlEuB",
+      "name": "Escape the Conference",
+      "logo": "http://escape.apidays.co/img/logo.png",
+      "start": {
+        "href": "http://escape.apidays.co/maze/q9wchRsARznXlEuB/start",
+        "id": "G1VrtP5mXQAJu9tf"
+      },
+      "story": "The terrible Middleware has stolen all the API knowledge",
+      "instructions": "Loose yourself in the maze and couloirs of the API underground. Navigate and find the hints",
+      "validate": "http://escape.apidays.co/validate/:token"
+    }
+  ]
+}

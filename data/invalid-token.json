@@ -1,0 +1,5 @@
+{
+  "status": 403,
+  "message": "Not the right token",
+  "hint": "The token is 68 characters long"
+}
