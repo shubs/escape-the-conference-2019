@@ -41,7 +41,8 @@ const db = "./db";
 const usersStore = fortune({
   user: {
     email: String,
-    levels: Array(Boolean)
+    levels: Array(Boolean),
+    validationAttempts: Number
   }
 },
   {
@@ -190,28 +191,29 @@ app
       else {
         console.log('User not found.. Creation of ', email)
         var levels = [false, false, false, false, false, false, false]
-        userResource = usersStore.create('user', { "email": email, "levels": levels })
+        userResource = usersStore.create('user', { "email": email, "levels": levels, validationAttempts: 1 })
           .then((resource) => resource.payload.records[0])
         return userResource
       }
     }).then((user) => {
 
+      user.validationAttempts++
       if (answer == config.escape.riddles[step]) {
         user.levels[step] = true
-        updateOptions = {
-          id: user.id,
-          replace: { levels: user.levels }
-        }
-        usersStore.update('user', updateOptions).then((r) => {
-          console.log('User Updated', user.email,user.levels)
-          res.setHeader('Content-Type', 'application/json');
-          res.send(fs.readFileSync('./data/valid-token.json'), null, 3)
-        })
+        mesageToSend = './data/valid-token.json'
       }
       else {
-        res.setHeader('Content-Type', 'application/json');
-        res.send(fs.readFileSync('./data/invalid-token.json'), null, 3)
+        mesageToSend = './data/invalid-token.json'
       }
+      updateOptions = {
+        id: user.id,
+        replace: { levels: user.levels, validationAttempts: user.validationAttempts }
+      }
+      usersStore.update('user', updateOptions).then((r) => {
+        console.log('User Updated', r.payload.records[0].email, r.payload.records[0].levels, r.payload.records[0].validationAttempts)
+      })
+      res.setHeader('Content-Type', 'application/json');
+      res.send(fs.readFileSync(mesageToSend), null, 3)
     })
 
   })
