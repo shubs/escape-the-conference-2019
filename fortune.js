@@ -174,7 +174,21 @@ app
   .get('/validate/:email/:step/:answer', keenio.trackRoute('validationCollection' + ENV), function (req, res) {
     const step = parseInt(req.params.step)
     const answer = req.params.answer
-    //console.log(config.escape.riddles[step], answer, step, req.params.email)
+    const email = req.params.email
+
+    // si email existe alors grab le users
+    //sinon le creer
+    usersStore.adapter.connect().then(function () {
+      var options = {
+        match: { "email": email }
+      }
+      u = usersStore.find('user', null, options).then(results => {
+        if (results.payload.count != 0)
+          console.log(results.payload.records)
+        else
+          console.log('Not known user, lets create ', email)
+      })
+    })
 
     if (answer == config.escape.riddles[step]) {
       res.setHeader('Content-Type', 'application/json');
@@ -192,21 +206,8 @@ app
       return users;
     }).then(function (resource) {
 
-      console.log(resource)
-      res.send(resource,null,3)
-      // if (resource) {
-      //   const mazeJSON = JSON.parse(fs.readFileSync('./data/maze.json'));
-      //   mazeJSON.href = config.escape.baseUrl + "/maze/" + resource[0].id;
-      //   mazeJSON.id = resource[0]._id;
-      //   mazeJSON.name = resource[0].name;
-      //   mazeJSON.story = resource[0].story;
-      //   mazeJSON.instructions = resource[0].instructions;
-      //   mazeJSON.validate = resource[0].validate;
-      //   mazeJSON.logo = resource[0].logo;
-      //   mazeJSON.start.href = config.escape.baseUrl + "/maze/" + resource[0].id + "/start";
-      //   mazeJSON.start.id = resource[0].start;
-      //   res.send(mazeJSON, null, 3)
-      // }
+      res.send(resource, null, 3)
+
     })
   })
 
