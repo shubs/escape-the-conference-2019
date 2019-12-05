@@ -10,10 +10,10 @@
 - Timeout 
 - Creer des email...
 
-#dodo
-- route backend /users
--- id email level
--- route crud simulation de mon coté
+# Pour Dodo
+- [x] route backend /users
+- [x] id email level
+- [x] route crud simulation de mon coté
 
 - il va faire du polling
 - Jauge quand c'est hit 
