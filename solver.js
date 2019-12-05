@@ -8,7 +8,7 @@ const instance = axios.create({
 
 const VisitedCell = []
 
-const startCellId = 'gj5GG0kHrvPaEobk'
+const startCellId = 'yE7cuPZUfnIhRfWn'
 
 function processCell(cellId) {
     instance.get('/cell/' + cellId)

@@ -10,8 +10,6 @@ The concatenation of the riddles solutions forms a token that could be validated
 
 The project is largely based on [@picsoung](https://github.com/picsoung)'s work [APIbunny](https://github.com/picsoung/apibunny)
 
-Find the whole story here.
-
 ## Play with the maze
 http://maze.apidays.co
 
