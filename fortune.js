@@ -22,24 +22,38 @@ const app = express()
 app.use(express.static(__dirname + '/public'));
 
 //Env
-var ENV='';
-if(process.env.NODE_ENV)
-  ENV="-"+process.env.NODE_ENV;
+var ENV = '';
+if (process.env.NODE_ENV)
+  ENV = "-" + process.env.NODE_ENV;
 
 //Keen
-keenio.configure({ client: {
+keenio.configure({
+  client: {
     projectId: config.keen.projectId,
     writeKey: config.keen.writeKey,
-} });
+  }
+});
 keenio.on('error', console.warn);
 
 //Fortune JS resources
 const db = "./db";
+
+const usersStore = fortune({
+  user: {
+    name: String,
+    email: String,
+    level: Number
+  }
+},
+  {
+    adapter: [nedbAdapter, { dbPath: db }]
+  }
+)
 const mazeAPI = fortune({
   maze: {
     name: String,
     logo: String,
-    cells: [ Array('cell'), 'maze' ],
+    cells: [Array('cell'), 'maze'],
     start: 'cell',
     story: String,
     instructions: String,
@@ -59,9 +73,9 @@ const mazeAPI = fortune({
     code: String
   }
 },
-{
-  adapter: [ nedbAdapter, {dbPath: db} ]
-}
+  {
+    adapter: [nedbAdapter, { dbPath: db }]
+  }
 )
 
 const options = {
@@ -70,27 +84,27 @@ const options = {
 
 const listener = fortuneHTTP(mazeAPI, {
   serializers: [
-    [ microApiSerializer, options ]
+    [microApiSerializer, options]
   ]
 })
 
 app
-  .get('/cell', keenio.trackRoute('errorCollection'+ENV), function (req, res) {
+  .get('/cell', keenio.trackRoute('errorCollection' + ENV), function (req, res) {
     res.setHeader('Content-Type', 'application/json');
     res.send(403, '{"status": 403, "message":"That\'d be far too easy... don\'t you think"}')
   })
-  .get('/maze/:id/cells', keenio.trackRoute('errorCollection'+ENV), function (req, res) {
+  .get('/maze/:id/cells', keenio.trackRoute('errorCollection' + ENV), function (req, res) {
     res.setHeader('Content-Type', 'application/json');
     res.send(403, '{"status": 403, "message":"That\'d be far too easy... don\'t you think"}')
   })
   // override maze endpoints to remove cells array
-  .get('/maze', keenio.trackRoute('indexCollection'+ENV), function (req, res) {
+  .get('/maze', keenio.trackRoute('indexCollection' + ENV), function (req, res) {
     res.setHeader('Content-Type', 'application/json');
     mazeAPI.adapter.connect().then(function () {
-        maze = mazeAPI.adapter.find('maze');
+      maze = mazeAPI.adapter.find('maze');
       return maze;
     }).then(function (resource) {
-      if(resource){
+      if (resource) {
         const mazeJSON = JSON.parse(fs.readFileSync('./data/mazes.json'));
         mazeJSON.graph[0].href = config.escape.baseUrl + "/maze/" + resource[0].id;
         mazeJSON.graph[0].id = resource[0]._id;
@@ -105,13 +119,13 @@ app
       }
     })
   })
-  .get('/maze/:id', keenio.trackRoute('indexCollection'+ENV), function (req, res) {
+  .get('/maze/:id', keenio.trackRoute('indexCollection' + ENV), function (req, res) {
     res.setHeader('Content-Type', 'application/json');
     mazeAPI.adapter.connect().then(function () {
-        maze = mazeAPI.adapter.find('maze');
+      maze = mazeAPI.adapter.find('maze');
       return maze;
     }).then(function (resource) {
-      if(resource){
+      if (resource) {
         const mazeJSON = JSON.parse(fs.readFileSync('./data/maze.json'));
         mazeJSON.href = config.escape.baseUrl + "/maze/" + resource[0].id;
         mazeJSON.id = resource[0]._id;
@@ -126,13 +140,13 @@ app
       }
     })
   })
-  .get('/cell/:id/maze', keenio.trackRoute('indexCollection'+ENV), function (req, res) {
+  .get('/cell/:id/maze', keenio.trackRoute('indexCollection' + ENV), function (req, res) {
     res.setHeader('Content-Type', 'application/json');
     mazeAPI.adapter.connect().then(function () {
-        maze = mazeAPI.adapter.find('maze');
+      maze = mazeAPI.adapter.find('maze');
       return maze;
     }).then(function (resource) {
-      if(resource){
+      if (resource) {
         const mazeJSON = JSON.parse(fs.readFileSync('./data/maze.json'));
         mazeJSON.href = config.escape.baseUrl + "/maze/" + resource[0].id;
         mazeJSON.id = resource[0]._id;
@@ -147,7 +161,7 @@ app
       }
     })
   })
-  .get('/validate/:email/final/:token', keenio.trackRoute('validationCollection'+ENV), function (req, res) {
+  .get('/validate/:email/final/:token', keenio.trackRoute('validationCollection' + ENV), function (req, res) {
     if (req.params.token.toLowerCase() == config.escape.token.toLowerCase()) {
       res.setHeader('Content-Type', 'application/json');
       res.send(fs.readFileSync('./data/valid-token.json'), null, 3)
@@ -157,7 +171,7 @@ app
       res.send(fs.readFileSync('./data/invalid-token.json'), null, 3)
     }
   })
-  .get('/validate/:email/:step/:answer', keenio.trackRoute('validationCollection'+ENV), function (req, res) {
+  .get('/validate/:email/:step/:answer', keenio.trackRoute('validationCollection' + ENV), function (req, res) {
     const step = parseInt(req.params.step)
     const answer = req.params.answer
     //console.log(config.escape.riddles[step], answer, step, req.params.email)
@@ -171,7 +185,31 @@ app
       res.send(fs.readFileSync('./data/invalid-token.json'), null, 3)
     }
   })
+  .get('/users', keenio.trackRoute('indexCollection' + ENV), function (req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    usersStore.adapter.connect().then(function () {
+      users = usersStore.adapter.find('user');
+      return users;
+    }).then(function (resource) {
+
+      console.log(resource)
+      res.send(resource,null,3)
+      // if (resource) {
+      //   const mazeJSON = JSON.parse(fs.readFileSync('./data/maze.json'));
+      //   mazeJSON.href = config.escape.baseUrl + "/maze/" + resource[0].id;
+      //   mazeJSON.id = resource[0]._id;
+      //   mazeJSON.name = resource[0].name;
+      //   mazeJSON.story = resource[0].story;
+      //   mazeJSON.instructions = resource[0].instructions;
+      //   mazeJSON.validate = resource[0].validate;
+      //   mazeJSON.logo = resource[0].logo;
+      //   mazeJSON.start.href = config.escape.baseUrl + "/maze/" + resource[0].id + "/start";
+      //   mazeJSON.start.id = resource[0].start;
+      //   res.send(mazeJSON, null, 3)
+      // }
+    })
+  })
 
 app.use(listener).listen(port);
 
-console.log('Server running at http://127.0.0.1:'+port);
+console.log('Server running at http://127.0.0.1:' + port);
