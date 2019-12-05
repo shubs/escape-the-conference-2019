@@ -17,8 +17,7 @@ config.escape.riddles = [
     '333',
     '444',
     '555',
-    '666',
-    '777'
+    '666'
 ]
 config.escape.token = config.escape.riddles.reduce((p,c) => p+'-'+c)
 

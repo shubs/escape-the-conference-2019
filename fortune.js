@@ -41,7 +41,7 @@ const db = "./db";
 const usersStore = fortune({
   user: {
     email: String,
-    level: Number
+    levels: Array(Boolean)
   }
 },
   {
@@ -189,16 +189,24 @@ app
       }
       else {
         console.log('User not found.. Creation of ', email)
-        userResource = usersStore.create('user', { "email": email, "level": 1 })
+        var levels = [false, false, false, false, false, false, false]
+        userResource = usersStore.create('user', { "email": email, "levels": levels })
           .then((resource) => resource.payload.records[0])
         return userResource
       }
     }).then((user) => {
-      console.log(user)
 
       if (answer == config.escape.riddles[step]) {
-        res.setHeader('Content-Type', 'application/json');
-        res.send(fs.readFileSync('./data/valid-token.json'), null, 3)
+        user.levels[step] = true
+        updateOptions = {
+          id: user.id,
+          replace: { levels: user.levels }
+        }
+        usersStore.update('user', updateOptions).then((r) => {
+          console.log('User Updated', user.email,user.levels)
+          res.setHeader('Content-Type', 'application/json');
+          res.send(fs.readFileSync('./data/valid-token.json'), null, 3)
+        })
       }
       else {
         res.setHeader('Content-Type', 'application/json');
