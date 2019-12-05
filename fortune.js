@@ -40,7 +40,6 @@ const db = "./db";
 
 const usersStore = fortune({
   user: {
-    name: String,
     email: String,
     level: Number
   }
@@ -179,25 +178,34 @@ app
     // si email existe alors grab le users
     //sinon le creer
     usersStore.adapter.connect().then(function () {
-      var options = {
-        match: { "email": email }
+      var options = { match: { "email": email } }
+      u = usersStore.find('user', null, options)
+      return u
+    }).then((result) => {
+      if (result.payload.count != 0) {
+        console.log('User', email, 'found!')
+        var userResource = (result.payload.records[0])
+        return userResource
       }
-      u = usersStore.find('user', null, options).then(results => {
-        if (results.payload.count != 0)
-          console.log(results.payload.records)
-        else
-          console.log('Not known user, lets create ', email)
-      })
+      else {
+        console.log('User not found.. Creation of ', email)
+        userResource = usersStore.create('user', { "email": email, "level": 1 })
+          .then((resource) => resource.payload.records[0])
+        return userResource
+      }
+    }).then((user) => {
+      console.log(user)
+
+      if (answer == config.escape.riddles[step]) {
+        res.setHeader('Content-Type', 'application/json');
+        res.send(fs.readFileSync('./data/valid-token.json'), null, 3)
+      }
+      else {
+        res.setHeader('Content-Type', 'application/json');
+        res.send(fs.readFileSync('./data/invalid-token.json'), null, 3)
+      }
     })
 
-    if (answer == config.escape.riddles[step]) {
-      res.setHeader('Content-Type', 'application/json');
-      res.send(fs.readFileSync('./data/valid-token.json'), null, 3)
-    }
-    else {
-      res.setHeader('Content-Type', 'application/json');
-      res.send(fs.readFileSync('./data/invalid-token.json'), null, 3)
-    }
   })
   .get('/users', keenio.trackRoute('indexCollection' + ENV), function (req, res) {
     res.setHeader('Content-Type', 'application/json');
