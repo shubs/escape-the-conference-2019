@@ -2,13 +2,15 @@
 - [x] Understand
 - [x] Remove Sponsors
 - [x] Create Validation steps
-- [] Add user haddle + email in Validation
+- [x] Add user haddle + email in Validation
 - [] add new Riddles
 - [] Add new Room Names
 - [] Make sure the maze change 
 - [] Change the messages to be randomized on failure
 - Timeout 
-- Creer des email...
+- Creer des email en mass ?
+- [ ] On win give them the progress of levels
+- [ ] Scope the validation levels
 
 # Pour Dodo
 - [x] route backend /users

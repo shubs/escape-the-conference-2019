@@ -14,7 +14,7 @@ const start = async () => {
         .then(async (json) => {
             await asyncForEach(json, async (u) => {
                 await waitFor(70);
-                await asyncForEach(([0, 1, 2, 3, 4, 5, 6]), async level => {
+                await asyncForEach(([0, 1, 2, 3, 4, 5, 12]), async level => {
                     await waitFor(70);
                     fetch(`http://localhost:3000/validate/${u.email}/${level}/${randomString()}`).then(r => {
                         console.log(r.url, r.status)
