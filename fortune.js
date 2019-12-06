@@ -18,6 +18,10 @@ const config = require('./config');
 const app = express()
   , port = process.argv[2] || config.escape.port;
 
+function getLevel (levels) {
+  return levels.filter(level => level === true).length
+}
+
 //Layout and views
 app.use(express.static(__dirname + '/public'));
 
@@ -50,7 +54,8 @@ const usersStore = fortune({
     levels: Array(Boolean),
     validationAttempts: Number,
     validationTimestamps: Array(Number),
-    creationTimestamp: Number
+    creationTimestamp: Number,
+    totalLevelsTimestamps: Object
   }
 },
   {
@@ -200,8 +205,17 @@ app
         console.log('User not found.. Creation of ', email)
         var levels = [false, false, false, false, false, false, false]
         var validationTimestamps = [0, 0, 0, 0, 0, 0, 0]
+        const totalLevelsTimestamps = {
+          1: null,
+          2: null,
+          3: null,
+          4: null,
+          5: null,
+          6: null,
+          7: null
+        }
         const creationTimestamp = Date.now()
-        userResource = usersStore.create('user', { "email": email, "levels": levels, validationAttempts: 1, 'validationTimestamps': validationTimestamps, creationTimestamp: creationTimestamp})
+        userResource = usersStore.create('user', { "email": email, "levels": levels, validationAttempts: 1, 'validationTimestamps': validationTimestamps, creationTimestamp: creationTimestamp, totalLevelsTimestamps: totalLevelsTimestamps})
           .then((resource) => resource.payload.records[0])
         return userResource
       }
@@ -210,7 +224,14 @@ app
       user.validationAttempts++
       if (answer == config.escape.riddles[step]) {
         user.levels[step] = true
-        user.validationTimestamps[step] = Date.now()
+        // Only update validation timestamp if not validated before
+        if (user.validationTimestamps[step] === 0 ) user.validationTimestamps[step] = Date.now()
+        const totalUserLevel = getLevel(user.levels)
+        console.log('TOTAL USER LEVEL ' + totalUserLevel)
+        // Only update timestamp of level arrival if first time
+        console.log(user.totalLevelsTimestamps[totalUserLevel])
+        if (user.totalLevelsTimestamps[totalUserLevel] === null) user.totalLevelsTimestamps[totalUserLevel] = Date.now()
+        console.log(user.totalLevelsTimestamps)
         mesageToSend = './data/valid-token.json'
       }
       else {
@@ -218,7 +239,7 @@ app
       }
       updateOptions = {
         id: user.id,
-        replace: { levels: user.levels, validationAttempts: user.validationAttempts, validationTimestamps: user.validationTimestamps }
+        replace: { levels: user.levels, validationAttempts: user.validationAttempts, validationTimestamps: user.validationTimestamps, totalLevelsTimestamps: user.totalLevelsTimestamps }
       }
       usersStore.update('user', updateOptions).then((r) => {
         console.log('User Updated', r.payload.records[0].email, r.payload.records[0].levels, r.payload.records[0].validationAttempts)
