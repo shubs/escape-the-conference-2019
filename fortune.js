@@ -21,6 +21,12 @@ const app = express()
 //Layout and views
 app.use(express.static(__dirname + '/public'));
 
+// CORS
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 //Env
 var ENV = '';
 if (process.env.NODE_ENV)
@@ -43,7 +49,8 @@ const usersStore = fortune({
     email: String,
     levels: Array(Boolean),
     validationAttempts: Number,
-    validationTimestamps: Array(Number)
+    validationTimestamps: Array(Number),
+    creationTimestamp: Number
   }
 },
   {
@@ -193,7 +200,8 @@ app
         console.log('User not found.. Creation of ', email)
         var levels = [false, false, false, false, false, false, false]
         var validationTimestamps = [0, 0, 0, 0, 0, 0, 0]
-        userResource = usersStore.create('user', { "email": email, "levels": levels, validationAttempts: 1, 'validationTimestamps': validationTimestamps })
+        const creationTimestamp = Date.now()
+        userResource = usersStore.create('user', { "email": email, "levels": levels, validationAttempts: 1, 'validationTimestamps': validationTimestamps, creationTimestamp: creationTimestamp})
           .then((resource) => resource.payload.records[0])
         return userResource
       }
