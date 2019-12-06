@@ -210,6 +210,7 @@ app
       user.validationAttempts++
       if (answer == config.escape.riddles[step]) {
         user.levels[step] = true
+        user.validationTimestamps[step] = Date.now()
         mesageToSend = './data/valid-token.json'
       }
       else {
@@ -217,7 +218,7 @@ app
       }
       updateOptions = {
         id: user.id,
-        replace: { levels: user.levels, validationAttempts: user.validationAttempts }
+        replace: { levels: user.levels, validationAttempts: user.validationAttempts, validationTimestamps: user.validationTimestamps }
       }
       usersStore.update('user', updateOptions).then((r) => {
         console.log('User Updated', r.payload.records[0].email, r.payload.records[0].levels, r.payload.records[0].validationAttempts)
