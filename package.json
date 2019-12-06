@@ -23,6 +23,7 @@
     "fortune-micro-api": "^3.1.6",
     "fortune-nedb": "^1.1.7",
     "nedb": "~0.9.4",
+    "node-fetch": "^2.6.0",
     "sync": "~0.2.2"
   },
   "engines": {
