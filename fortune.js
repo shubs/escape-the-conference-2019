@@ -42,7 +42,8 @@ const usersStore = fortune({
   user: {
     email: String,
     levels: Array(Boolean),
-    validationAttempts: Number
+    validationAttempts: Number,
+    validationTimestamps: Array(Number)
   }
 },
   {
@@ -191,7 +192,8 @@ app
       else {
         console.log('User not found.. Creation of ', email)
         var levels = [false, false, false, false, false, false, false]
-        userResource = usersStore.create('user', { "email": email, "levels": levels, validationAttempts: 1 })
+        var validationTimestamps = [0, 0, 0, 0, 0, 0, 0]
+        userResource = usersStore.create('user', { "email": email, "levels": levels, validationAttempts: 1, 'validationTimestamps': validationTimestamps })
           .then((resource) => resource.payload.records[0])
         return userResource
       }
