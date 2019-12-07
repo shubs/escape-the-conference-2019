@@ -9,15 +9,15 @@ async function asyncForEach(array, callback) {
 }
 const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
 const start = async () => {
-    fetch('https://randomuser.me/api/?results=20')
+    fetch('https://randomuser.me/api/?results=30')
     .then(response => response.json())
     .then(json => json.results)
         .then(async (json) => {
             console.log(json.legnth)
             await asyncForEach(json, async (u) => {
-                await waitFor(1000);
-                await asyncForEach(([0, 1, 2, 3, 4, 5, 12]), async level => {
-                    await waitFor(1000);
+                await waitFor(100);
+                await asyncForEach(([0, 1, 2, 3, 4, 5, 6]), async level => {
+                    await waitFor(100);
                     console.log(config.escape.riddles)
                     const validationChance = _.random(0, 1, true)
                     const hasGoodAnswer = validationChance < 0.75

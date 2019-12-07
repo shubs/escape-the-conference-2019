@@ -8,7 +8,7 @@ config.keen.writeKey = "1FE3BFCE8AD0456F30DAC272F5FF42FFF43063E253DFF5FCA4D3408F
 
 config.escape.privateKey = "SADSAHDICXBADSADISAD";
 config.escape.host = "localhost";
-config.escape.port = 3000;
+config.escape.port = process.env.PORT;
 config.escape.baseUrl = "http://127.0.0.1:3000";
 
 config.escape.riddles = [
