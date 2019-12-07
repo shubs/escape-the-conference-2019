@@ -7,6 +7,7 @@ var fs = require('fs');
 const fortune = require('fortune')
 const express = require('express');
 const nedbAdapter = require('fortune-nedb')
+var mongoose = require('mongoose');
 const http = require('http')
 const fortuneHTTP = require('fortune-http')
 const microApiSerializer = require('fortune-micro-api')
@@ -15,10 +16,14 @@ const keenio = require('express-keenio');
 
 const config = require('./config');
 
+mongoose.connect(config.mongo, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify :false});
+var mdb = mongoose.connection;
+mdb.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
 const app = express()
   , port = process.argv[2] || config.escape.port;
 
-function getLevel (levels) {
+function getLevel(levels) {
   return levels.filter(level => level === true).length
 }
 
@@ -26,7 +31,7 @@ function getLevel (levels) {
 app.use(express.static(__dirname + '/public'));
 
 // CORS
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
@@ -47,6 +52,26 @@ keenio.on('error', console.warn);
 
 //Fortune JS resources
 const db = "./db";
+const userSchema = new mongoose.Schema({
+  email: String,
+  levels: Array(Boolean),
+  validationAttempts: Number,
+  validationTimestamps: Array(Number),
+  creationTimestamp: Number,
+  totalLevelsTimestamps: Object
+});
+const User = mongoose.model("User", userSchema);
+
+
+async function getUser(email) {
+  return await User.find({ email: email }).then((u) => {
+    if (u != [])
+      return u[0]
+    else {
+      return null
+    }
+  })
+}
 
 const usersStore = fortune({
   user: {
@@ -189,76 +214,59 @@ app
     const answer = req.params.answer
     const email = req.params.email
 
-    // si email existe alors grab le users
-    //sinon le creer
-    usersStore.adapter.connect().then(function () {
-      var options = { match: { "email": email } }
-      u = usersStore.find('user', null, options)
-      return u
-    }).then((result) => {
-      if (result.payload.count != 0) {
-        console.log('User', email, 'found!')
-        var userResource = (result.payload.records[0])
-        return userResource
-      }
-      else {
-        console.log('User not found.. Creation of ', email)
-        var levels = [false, false, false, false, false, false, false]
-        var validationTimestamps = [0, 0, 0, 0, 0, 0, 0]
-        const totalLevelsTimestamps = {
-          1: null,
-          2: null,
-          3: null,
-          4: null,
-          5: null,
-          6: null,
-          7: null
+    // si email existe alors grab le users sinon le create
+
+    getUser(email)
+      .then(u => {
+        if (u)
+          return u
+        else {
+          var levels = [false, false, false, false, false, false, false]
+          var validationTimestamps = [0, 0, 0, 0, 0, 0, 0]
+          const totalLevelsTimestamps = { 1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null }
+          const creationTimestamp = Date.now()
+          newUser = { "email": email, "levels": levels, validationAttempts: 1, 'validationTimestamps': validationTimestamps, creationTimestamp: creationTimestamp, totalLevelsTimestamps: totalLevelsTimestamps }
+
+          return User.create(newUser).then(u => u)
         }
-        const creationTimestamp = Date.now()
-        userResource = usersStore.create('user', { "email": email, "levels": levels, validationAttempts: 1, 'validationTimestamps': validationTimestamps, creationTimestamp: creationTimestamp, totalLevelsTimestamps: totalLevelsTimestamps})
-          .then((resource) => resource.payload.records[0])
-        return userResource
-      }
-    }).then((user) => {
-
-      user.validationAttempts++
-      if (answer == config.escape.riddles[step]) {
-        user.levels[step] = true
-        // Only update validation timestamp if not validated before
-        if (user.validationTimestamps[step] === 0 ) user.validationTimestamps[step] = Date.now()
-        const totalUserLevel = getLevel(user.levels)
-        console.log('TOTAL USER LEVEL ' + totalUserLevel)
-        // Only update timestamp of level arrival if first time
-        console.log(user.totalLevelsTimestamps[totalUserLevel])
-        if (user.totalLevelsTimestamps[totalUserLevel] === null) user.totalLevelsTimestamps[totalUserLevel] = Date.now()
-        console.log(user.totalLevelsTimestamps)
-        mesageToSend = './data/valid-token.json'
-      }
-      else {
-        mesageToSend = './data/invalid-token.json'
-      }
-      updateOptions = {
-        id: user.id,
-        replace: { levels: user.levels, validationAttempts: user.validationAttempts, validationTimestamps: user.validationTimestamps, totalLevelsTimestamps: user.totalLevelsTimestamps }
-      }
-      usersStore.update('user', updateOptions).then((r) => {
-        console.log('User Updated', r.payload.records[0].email, r.payload.records[0].levels, r.payload.records[0].validationAttempts)
       })
-      res.setHeader('Content-Type', 'application/json');
-      res.send(fs.readFileSync(mesageToSend), null, 3)
-    })
+      .then(u => {
+        u.validationAttempts++
+        if (answer == config.escape.riddles[step]) {
 
+          u.levels[step] = true
+          // Only update validation timestamp if not validated before
+          if (u.validationTimestamps[step] === 0) u.validationTimestamps[step] = Date.now()
+          const totalUserLevel = getLevel(u.levels)
+          //console.log('TOTAL USER LEVEL ' + totalUserLevel)
+          // Only update timestamp of level arrival if first time
+          if (u.totalLevelsTimestamps[totalUserLevel] === null) u.totalLevelsTimestamps[totalUserLevel] = Date.now()
+          //console.log(u.totalLevelsTimestamps)
+          mesageToSend = './data/valid-token.json'
+        }
+        else {
+          mesageToSend = './data/invalid-token.json'
+        }
+        User.findByIdAndUpdate({
+          _id: u.id
+        }, u, (err, response) => {
+          res.setHeader('Content-Type', 'application/json');
+          res.send(fs.readFileSync(mesageToSend), null, 3)
+        });
+      })
   })
   .get('/users', keenio.trackRoute('indexCollection' + ENV), function (req, res) {
     res.setHeader('Content-Type', 'application/json');
-    usersStore.adapter.connect().then(function () {
-      users = usersStore.adapter.find('user');
-      return users;
-    }).then(function (resource) {
+    User.find({}, function (err, users) {
+      res.send(users);
+    });
+  })
+  .get('/users/flush', keenio.trackRoute('indexCollection' + ENV), function (req, res) {
+    res.setHeader('Content-Type', 'application/json');
 
-      res.send(resource, null, 3)
-
-    })
+    User.deleteMany({}, function (err) {
+      res.send('removed all')
+    });
   })
 
 app.use(listener).listen(port);
