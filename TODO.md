@@ -4,7 +4,7 @@
 - [x] Create Validation steps
 - [x] Add user haddle + email in Validation
 - [ ] Add new Riddles
-- [ ] Add new Room Names https://apiglossary.com/ https://idratherbewriting.com/learnapidoc/api-glossary.html https://rapidapi.com/blog/api-glossary/
+- [x] Add new Room Names (sponsors names) https://apiglossary.com/ https://idratherbewriting.com/learnapidoc/api-glossary.html https://rapidapi.com/blog/api-glossary/
 - [ ] Make sure the maze change 
 - [ ] Change the messages to be randomized on failure or sucess
 - [ ] Add incentive for gravatar
