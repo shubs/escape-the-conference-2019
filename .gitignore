@@ -25,9 +25,9 @@ build/Release
 node_modules
 
 # NeDb data
-/db/*
+#/db/*
 
-*.db
+
 # vectors file
 vectors
 
