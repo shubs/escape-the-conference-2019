@@ -11,6 +11,7 @@
 - [ ] On win give them the progress of levels
 - [ ] Make sure to populate the "db" folder before deploy en heroku
 - [ ] Check if the "validate" ressource is really important (ex : validate.db)
+- [ ] Change the validation instruction
 
 # IRL
 - [ ] Faire des affiches (PSD) + imprimer
