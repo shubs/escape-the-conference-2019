@@ -16,7 +16,7 @@ const keenio = require('express-keenio');
 
 const config = require('./config');
 
-mongoose.connect(config.mongo, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify :false});
+mongoose.connect(config.mongo, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
 var mdb = mongoose.connection;
 mdb.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
@@ -25,6 +25,27 @@ const app = express()
 
 function getLevel(levels) {
   return levels.filter(level => level === true).length
+}
+
+function buildSuccessMessage(user, level) {
+  var percentage = Math.round(getLevel(user.levels) / 7 * 100)
+  var obj = {
+    "message": "Well done, you've found the right answer for Level " + level,
+    "email": user.email,
+    "completion": percentage + '%',
+    "info": "Make sure to add a Gravatar image for your email https://gravatar.com/"
+  }
+  return obj
+}
+function buildFailMessage(user, level) {
+  var percentage = Math.round(getLevel(user.levels) / 7 * 100)
+  var obj = {
+    "status": 403,
+    "message": "Not the right answer...",
+    "email": user.email,
+    "completion": percentage + '%',
+  }
+  return obj
 }
 
 //Layout and views
@@ -200,13 +221,26 @@ app
     })
   })
   .get('/validate/:email/final/:token', keenio.trackRoute('validationCollection' + ENV), function (req, res) {
+    const email = req.params.email
     if (req.params.token.toLowerCase() == config.escape.token.toLowerCase()) {
+      var objSuccess = {
+        "message": "Well done, you've found the right token! Keep it for you!",
+        "instructions" : "Go to the Escape the Conference booth and tell the password",
+        "password" : "I think the vault should be open, because I am here to bring you the right token",
+        "email":email
+      }
       res.setHeader('Content-Type', 'application/json');
-      res.send(fs.readFileSync('./data/valid-token.json'), null, 3)
+      res.send(objSuccess, null, 3)
     }
     else {
+      var objFail = {
+        "status": 403,
+        "message": "Not the right token",
+        "email":email,
+        "hint": "{Riddle#0}-{Riddle#1}-{Riddle#2}-{Riddle#3}-{Riddle#4}-{Riddle#5}-{Riddle#6}"
+      }
       res.setHeader('Content-Type', 'application/json');
-      res.send(fs.readFileSync('./data/invalid-token.json'), null, 3)
+      res.send(objFail, null, 3)
     }
   })
   .get('/validate/:email/:step/:answer', keenio.trackRoute('validationCollection' + ENV), function (req, res) {
@@ -242,16 +276,16 @@ app
           // Only update timestamp of level arrival if first time
           if (u.totalLevelsTimestamps[totalUserLevel] === null) u.totalLevelsTimestamps[totalUserLevel] = Date.now()
           //console.log(u.totalLevelsTimestamps)
-          mesageToSend = './data/valid-token.json'
+          mesageToSend = buildSuccessMessage(u, step)
         }
         else {
-          mesageToSend = './data/invalid-token.json'
+          mesageToSend = buildFailMessage(u, step)
         }
         User.findByIdAndUpdate({
           _id: u.id
         }, u, (err, response) => {
           res.setHeader('Content-Type', 'application/json');
-          res.send(fs.readFileSync(mesageToSend), null, 3)
+          res.send(mesageToSend, null, 3)
         });
       })
   })

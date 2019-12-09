@@ -1,5 +1,5 @@
 {
   "status": 403,
   "message": "Not the right token",
-  "hint": "The token is 68 characters long"
+  "hint": "{Riddle#0}-{Riddle#1}-{Riddle#2}-{Riddle#3}-{Riddle#4}-{Riddle#5}-{Riddle#6}"
 }

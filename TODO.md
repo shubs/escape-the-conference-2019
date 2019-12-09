@@ -11,12 +11,14 @@
 - [ ] On win give them the progress of levels
 - [ ] Check if the "validate" ressource is really important (ex : validate.db)
 - [ ] Change the validation instruction
+- [ ] PILES LAMPWS UV
+- [ ] Faire le transfert du nom dedomaine 
 
 # IRL
 - [X] Faire des affiches (PSD) + imprimer
-- [ ] Acheter les casses tetes chinois
-- [ ] s'assurer qu'ils ont toute les ancienne clés etc
-- [ ] Choisir et aller acheter le cadeau
+- [X] Acheter les casses tetes chinois
+- [X] s'assurer qu'ils ont toute les ancienne clés etc
+- [X] Choisir et aller acheter le cadeau
 
 # FRONT
 - [x] route backend /users
