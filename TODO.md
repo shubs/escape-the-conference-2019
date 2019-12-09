@@ -3,13 +3,12 @@
 - [x] Remove Sponsors
 - [x] Create Validation steps
 - [x] Add user haddle + email in Validation
-- [ ] Add new Riddles
+- [x] Add new Riddles
 - [x] Add new Room Names (sponsors names) https://apiglossary.com/ https://idratherbewriting.com/learnapidoc/api-glossary.html https://rapidapi.com/blog/api-glossary/
 - [ ] Make sure the maze change 
 - [ ] Change the messages to be randomized on failure or sucess
 - [ ] Add incentive for gravatar
 - [ ] On win give them the progress of levels
-- [ ] Make sure to populate the "db" folder before deploy en heroku
 - [ ] Check if the "validate" ressource is really important (ex : validate.db)
 - [ ] Change the validation instruction
 
@@ -26,3 +25,13 @@
 - [x] il va faire du polling
 - [ ] Jauge quand c'est hit 
 - [ ] Ajouter un peu de branding
+
+# Ce soir
+- photoshop les riddles
+
+# DEMAIN
+- s'assurer que tout est la (ecran, clés etc)
+- imprimer les riddles
+- dej
+- Casse tete acheter
+- cadeau acheter

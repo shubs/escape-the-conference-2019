@@ -27,7 +27,8 @@ Sync(function(){
     const instructions = "Loose yourself in the maze, wonder in the cells to find the riddles. Solve the riddles and find each part of the lost token"
     const validate = BASE_URL + "/validate/:token"
     const result = createMaze.sync(null, name, logo, story, instructions, validate)
-    maze = result.records[0];
+	maze = result.records[0];
+	console.log(result)
     const rawMaze = getFileMaze(maze_name);
     //Add Cells
     addCellsToDb.sync(null,rawMaze,maze);
@@ -83,7 +84,7 @@ Sync(function(){
 
   try {
     //Init start point
-    var data = '{"id": "' + mazedb.records[0].id +'" , "replace": { "start": "' +maze_cells['cell1'].id  +'" }}'
+	var data = '{"id": "' + mazedb.records[0].id +'" , "replace": { "start": "' +maze_cells['cell1'].id  +'" }}'
     httpPatch.sync(null,'/maze', mazedb.records[0].id, data);
     console.log('End - executed in '+ (Date.now()-start_time)+"ms");
   }
@@ -113,6 +114,7 @@ function getMazeDB(id,cb){
 */
 function addCellsToDb(mazeObject,mazeDb,cb){
 	var cells = mazeObject.cells;
+
   for(var i =1; i<=Object.keys(cells).length;i++){
     var c = cells['cell'+i];
     var newDbCell = createCell.sync(null, c, i, mazeDb);
