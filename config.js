@@ -19,11 +19,11 @@ else {
 }
 
 config.escape.riddles = [
-    '218',
+    '379642',
     '523',
     'keyboard',
     '128',
-    '630',
+    '445',
     '19',
     'abatylamij'
 ]
