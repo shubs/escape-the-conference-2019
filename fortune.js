@@ -129,9 +129,6 @@ const mazeAPI = fortune({
     south: 'cell',
     west: 'cell',
     maze: ['maze', 'cells'],
-  },
-  validate: {
-    code: String
   }
 },
   {
