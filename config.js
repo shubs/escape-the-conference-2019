@@ -20,7 +20,7 @@ else {
 
 config.escape.riddles = [
     '218',
-    '563',
+    '523',
     'keyboard',
     '128',
     '630',

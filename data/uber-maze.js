@@ -20,7 +20,7 @@
     "cell17": { "content": "http://sharma.fr/data/escape/1.png", "name": "The Segment Room", "doors": [16, 0, 0, 0] },
     "cell18": { "content": "", "name": "The NGINX Room", "doors": [0, 0, 16, 0] },
     "cell19": { "content": "", "name": "The Apigee Room", "doors": [20, 0, 15, 0] },
-    "cell20": { "content": "A=65;Z=89;A+P+I=?", "name": "The WSO2 Room", "doors": [0, 0, 19, 0] },
+    "cell20": { "content": "A=65;Z=90;A+P+I=?", "name": "The WSO2 Room", "doors": [0, 0, 19, 0] },
     "cell21": { "content": "", "name": "The Odaseva Room", "doors": [0, 0, 22, 14] },
     "cell22": { "content": "", "name": "The Open API Room", "doors": [21, 31, 23, 0] },
     "cell23": { "content": "http://sharma.fr/data/escape/6.pdf", "name": "The Talend Room", "doors": [22, 24, 0, 0] },

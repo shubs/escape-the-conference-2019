@@ -25,7 +25,7 @@ Sync(function(){
     const logo = BASE_URL + "/img/logo.png"
     const story = "The dark and evil Middleware has stolen all the API knowledge and locked it up in a safe. Find the clues and solve all its riddles to save us all!"
     const instructions = "Loose yourself in the maze, wonder in the cells to find the riddles. Solve the riddles and find each part of the lost token"
-    const validate = BASE_URL + "/validate/:token"
+    const validate = BASE_URL + "/validate/:email/final/:token"
     const result = createMaze.sync(null, name, logo, story, instructions, validate)
 	maze = result.records[0];
 	console.log(result)

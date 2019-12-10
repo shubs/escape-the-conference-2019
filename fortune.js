@@ -35,6 +35,8 @@ function buildSuccessMessage(user, level) {
     "completion": percentage + '%',
     "info": "Make sure to add a Gravatar image for your email https://gravatar.com/"
   }
+  if (percentage == 100)
+    obj.next = "you can now validate the final token /validate/:email/final/:token"
   return obj
 }
 function buildFailMessage(user, level) {
