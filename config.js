@@ -9,8 +9,8 @@ config.keen.writeKey = "1FE3BFCE8AD0456F30DAC272F5FF42FFF43063E253DFF5FCA4D3408F
 config.escape.privateKey = "SADSAHDICXBADSADISAD";
 config.escape.port = process.env.PORT;
 if (process.env.ENV == "production") {
-    config.escape.baseUrl = "https://escapte-the-conference-2019.herokuapp.com"
-    config.escape.host = "escapte-the-conference-2019.herokuapp.com";
+    config.escape.baseUrl = "http://escape.apidays.io/"
+    config.escape.host = "escape.apidays.io";
 }
 else {
 
