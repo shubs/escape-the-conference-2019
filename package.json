@@ -23,7 +23,7 @@
     "fortune-http": "^1.2.25",
     "fortune-micro-api": "^3.1.6",
     "fortune-nedb": "^1.1.7",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "mongodb": "^3.3.5",
     "mongoose": "^5.7.14",
     "nedb": "~0.9.4",
