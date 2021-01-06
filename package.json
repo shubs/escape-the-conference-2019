@@ -14,7 +14,7 @@
   "author": "shubham-sharma",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "express": "~3.4.8",
     "express-keenio": "~0.2.7",
     "express-partials": "^0.3.0",
