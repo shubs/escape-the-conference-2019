@@ -27,7 +27,7 @@
     "mongodb": "^3.3.5",
     "mongoose": "^5.7.14",
     "nedb": "~0.9.4",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.7",
     "sync": "~0.2.2"
   },
   "engines": {
