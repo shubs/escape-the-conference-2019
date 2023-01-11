@@ -15,7 +15,7 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^0.19.0",
-    "express": "~3.4.8",
+    "express": "~4.18.2",
     "express-keenio": "~0.2.7",
     "express-partials": "^0.3.0",
     "fibers": "^4.0.2",
